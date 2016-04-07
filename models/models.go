@@ -91,5 +91,38 @@ func GetAllCategories() ([]*Category, error) {
 	o := orm.NewOrm()
 	categories := make([]*Category, 0)
 	_, err := o.QueryTable("category").All(&categories)
+	if err != nil {
+		return nil, err
+	}
 	return categories, err
+}
+
+func AddTopic(title, content string) error {
+	o := orm.NewOrm()
+	topic := &Topic{
+		Title:     title,
+		Content:   content,
+		Created:   time.Now(),
+		Updated:   time.Now(),
+		ReplyTime: time.Now(),
+	}
+	err := o.QueryTable("topic").Filter("title", title).One(topic)
+	if err == nil {
+		return nil
+	}
+	_, err = o.Insert(topic)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetAllTopics() ([]*Topic, error) {
+	o := orm.NewOrm()
+	topics := make([]*Topic, 0)
+	_, err := o.QueryTable("topic").All(&topics)
+	if err != nil {
+		return nil, err
+	}
+	return topics, err
 }
