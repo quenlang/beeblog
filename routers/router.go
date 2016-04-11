@@ -12,4 +12,5 @@ func init() {
 	beego.Router("/topic", &controllers.TopicController{})
 	//beego.Router("/topic/add", &controllers.TopicController{}, "GET:Add")
 	beego.AutoRouter(&controllers.TopicController{})
+	beego.Router("/attachment/:all", &controllers.AttachController{})
 }

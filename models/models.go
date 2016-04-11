@@ -1,7 +1,7 @@
 package models
 
 import (
-	"fmt"
+	//"fmt"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/mattn/go-sqlite3"
 	"os"
@@ -64,7 +64,7 @@ func AddCategory(name string) error {
 	}
 	qs := o.QueryTable("category")
 	err := qs.Filter("title", name).One(category)
-	fmt.Printf("One():%v\n", err)
+	//fmt.Printf("One():%v\n", err)
 	if err == nil {
 		return err
 	}
@@ -97,14 +97,15 @@ func GetAllCategories() ([]*Category, error) {
 	return categories, err
 }
 
-func AddTopic(title, content string) error {
+func AddTopic(title, content, attachment string) error {
 	o := orm.NewOrm()
 	topic := &Topic{
-		Title:     title,
-		Content:   content,
-		Created:   time.Now(),
-		Updated:   time.Now(),
-		ReplyTime: time.Now(),
+		Title:      title,
+		Content:    content,
+		Attachment: attachment,
+		Created:    time.Now(),
+		Updated:    time.Now(),
+		ReplyTime:  time.Now(),
 	}
 	err := o.QueryTable("topic").Filter("title", title).One(topic)
 	if err == nil {
@@ -115,6 +116,48 @@ func AddTopic(title, content string) error {
 		return err
 	}
 	return nil
+}
+
+func UpdateTopic(tid, title, content, attachment string) error {
+	o := orm.NewOrm()
+	id, err := strconv.ParseInt(tid, 10, 64)
+	topic := &Topic{
+		Id: id,
+	}
+
+	err = o.Read(topic)
+	if err == nil {
+		topic.Title = title
+		topic.Content = content
+		topic.Attachment = attachment
+		topic.Updated = time.Now()
+		o.Update(topic)
+	}
+	return nil
+}
+
+func DelTopic(tid string) error {
+	id, err := strconv.ParseInt(tid, 10, 64)
+	o := orm.NewOrm()
+	topic := &Topic{
+		Id: id,
+	}
+	_, err = o.Delete(topic)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetTopic(tid string) (*Topic, error) {
+	o := orm.NewOrm()
+	id, err := strconv.ParseInt(tid, 10, 64)
+	topic := &Topic{}
+	err = o.QueryTable("topic").Filter("id", id).One(topic)
+	//fmt.Printf("modles: %d\n", id)
+	//fmt.Println(err)
+	return topic, err
+
 }
 
 func GetAllTopics() ([]*Topic, error) {

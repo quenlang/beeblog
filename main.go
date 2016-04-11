@@ -5,6 +5,7 @@ import (
 	_ "beeblog/routers"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+	"os"
 )
 
 func init() {
@@ -18,6 +19,7 @@ func main() {
 	// auto create object
 	orm.RunSyncdb("default", false, true)
 
+	os.Mkdir("attachment", os.ModePerm)
 	// startup
 	beego.Run()
 
